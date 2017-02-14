@@ -7,5 +7,6 @@ POST: use id,date,weight as keys
 PUT: use id,date and new weight
 GET: use id, date to get weight and also the average weight of that user
 DELETE: remove records based on id and date
+3. The data gets stored in the input.json file
 
 Refer console and Client for output
