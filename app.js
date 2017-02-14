@@ -15,7 +15,7 @@ s.on('request', function(request, response) {
      var val;
      
      queryData=url.parse(request.url, true).query;
-     fs.readFile('input.json', 'utf8', function readFileCallback(err, data){
+     fs.readFile('input.json', 'utf8', function readFileCallback(err, data, callback){
                  
                  if (err){
                  console.log(err);
@@ -27,14 +27,15 @@ s.on('request', function(request, response) {
                     var userid=queryData.id;
                     var weight=queryData.weight;
                     var date=queryData.date;
-                 
+                    var val=obj[userid]
                  
                  if (request.method==='POST'){
                     if (!obj[userid]){
                         obj[userid]=[{"date" : date, "weight" : weight}];
                                      }
+                 
                     else {
-                        console.log("reached")
+                        console.log("Record Exists, appending to new date")
                         obj[userid].push({"date" : date, "weight" : weight});
                                      }
                     var json = JSON.stringify(obj);
@@ -42,9 +43,25 @@ s.on('request', function(request, response) {
                     fs.writeFile('input.json', json, 'utf8');
                     }
                  
+                 else if (request.method==='PUT'){
+                 if (obj[userid]){
+                 for (i in val){
+                 if(val[i].date==date){
+                 val[i].weight=weight;
+                 var json = JSON.stringify(obj);
+                 console.log("\n"+json);
+                 fs.writeFile('input.json', json, 'utf8');
+                 }
+                 }
+                 
+                 }
+                 
+                 else {
+                 console.log("Doesn't Exist")
+                 }
+                 }
                  
                  else if (request.method==='GET'){
-                 var val=obj[userid]
                  var total=parseInt(0)
                  for (i in val){
                  total+=parseInt(val[i].weight);
